@@ -115,7 +115,9 @@ subprojects {
             }
         }
 
+        val publishingToEinJojo = gradle.startParameter.taskNames.any { it.contains("EinJojoReleases", ignoreCase = true) }
         if (!gradle.startParameter.taskNames.any { it == "publishToMavenLocal" }
+            && !publishingToEinJojo
             && (!isSnapshot || (isSnapshot && releaseSnapshots))) {
             publishToMavenCentral()
             signAllPublications()
@@ -125,7 +127,7 @@ subprojects {
             repositories {
                 maven {
                     name = "EinJojoReleases"
-                    url = uri("https://einjojo.it/releases")
+                    url = uri("https://repo.einjojo.it/releases")
                     credentials {
                         username = System.getenv("EINJOJO_USERNAME") ?: ""
                         password = System.getenv("EINJOJO_PASSWORD") ?: ""
