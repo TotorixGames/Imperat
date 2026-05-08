@@ -121,6 +121,19 @@ subprojects {
             signAllPublications()
         }
 
+        configure<org.gradle.api.publish.PublishingExtension> {
+            repositories {
+                maven {
+                    name = "EinJojoReleases"
+                    url = uri("https://einjojo.it/releases")
+                    credentials {
+                        username = System.getenv("EINJOJO_USERNAME") ?: ""
+                        password = System.getenv("EINJOJO_PASSWORD") ?: ""
+                    }
+                }
+            }
+        }
+
         tasks.withType<JavaCompile> {
             options.encoding = "UTF-8"
             options.compilerArgs.add("-parameters")
