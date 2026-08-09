@@ -4,8 +4,8 @@ plugins {
     kotlin("jvm") version "2.3.0" apply false
 }
 
-val baseVersion = "4.0.0"
-val releaseSnapshots = true
+val baseVersion = "2608-1"
+val releaseSnapshots = false
 val isSnapshot = System.getenv("SNAPSHOT_BUILD") == "true"
 val rootJavaVersion = 21
 
@@ -26,7 +26,7 @@ allprojects {
         options.encoding = "UTF-8"
     }
 
-    group = "studio.mevera"
+    group = "net.totorix"
     version = baseVersion
 
     if (isSnapshot && releaseSnapshots) {
@@ -111,11 +111,27 @@ subprojects {
             }
         }
 
+        val publishingToEinJojo = gradle.startParameter.taskNames.any { it.contains("EinJojoReleases", ignoreCase = true) }
         if (!gradle.startParameter.taskNames.any { it == "publishToMavenLocal" }
+            && !publishingToEinJojo
             && (!isSnapshot || (isSnapshot && releaseSnapshots))) {
             publishToMavenCentral()
             signAllPublications()
         }
+
+        configure<org.gradle.api.publish.PublishingExtension> {
+            repositories {
+                maven {
+                    name = "EinJojoReleases"
+                    url = uri("https://repo.einjojo.it/releases")
+                    credentials {
+                        username = System.getenv("EINJOJO_USERNAME") ?: ""
+                        password = System.getenv("EINJOJO_PASSWORD") ?: ""
+                    }
+                }
+            }
+        }
+
 
         tasks.withType<JavaCompile> {
             options.encoding = "UTF-8"
