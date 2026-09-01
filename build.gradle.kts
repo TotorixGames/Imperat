@@ -4,7 +4,7 @@ plugins {
     kotlin("jvm") version "2.3.0" apply false
 }
 
-val baseVersion = "2608-1"
+val baseVersion = "2609-1"
 val releaseSnapshots = false
 val isSnapshot = System.getenv("SNAPSHOT_BUILD") == "true"
 val rootJavaVersion = 21
